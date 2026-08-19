@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Data & Vectors
+data/
+*.qdrant/
+*.parquet
+*.jsonl
+*.csv
+!data/sample_queries.json
+
+# Environment Secrets
+.env
+.env.local
+
+# Node & Frontend
+node_modules/
+frontend/dist/
+frontend/.next/
+.DS_Store
+Thumbs.db

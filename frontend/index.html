@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en" class="dark" data-theme="emerald">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice RAG | Hacker House Goa 2026</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: 'var(--bg-main)',
+                            card: 'var(--card-bg)',
+                            cardHover: 'var(--card-hover)',
+                            border: 'var(--border-subtle)',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        /* 1. Cyber Emerald Theme (Default) */
+        :root, [data-theme="emerald"] {
+            --bg-main: #050a0e;
+            --card-bg: rgba(9, 20, 28, 0.72);
+            --card-hover: rgba(14, 30, 42, 0.85);
+            --border-subtle: rgba(16, 185, 129, 0.15);
+            --border-glow: rgba(16, 185, 129, 0.35);
+            --primary: #10b981;
+            --primary-light: #34d399;
+            --secondary: #06b6d4;
+            --accent-glow: rgba(16, 185, 129, 0.35);
+            --bg-radial-1: rgba(16, 185, 129, 0.12);
+            --bg-radial-2: rgba(6, 182, 212, 0.08);
+            --btn-grad-from: #059669;
+            --btn-grad-to: #0d9488;
+        }
+
+        /* 2. Royal Nebula Theme */
+        [data-theme="nebula"] {
+            --bg-main: #070611;
+            --card-bg: rgba(18, 14, 36, 0.72);
+            --card-hover: rgba(26, 20, 52, 0.85);
+            --border-subtle: rgba(139, 92, 246, 0.15);
+            --border-glow: rgba(139, 92, 246, 0.35);
+            --primary: #8b5cf6;
+            --primary-light: #a78bfa;
+            --secondary: #ec4899;
+            --accent-glow: rgba(139, 92, 246, 0.35);
+            --bg-radial-1: rgba(139, 92, 246, 0.12);
+            --bg-radial-2: rgba(236, 72, 153, 0.08);
+            --btn-grad-from: #7c3aed;
+            --btn-grad-to: #c026d3;
+        }
+
+        /* 3. Solar Sunset Theme */
+        [data-theme="solar"] {
+            --bg-main: #0c0806;
+            --card-bg: rgba(26, 17, 13, 0.72);
+            --card-hover: rgba(38, 25, 19, 0.85);
+            --border-subtle: rgba(245, 158, 11, 0.15);
+            --border-glow: rgba(245, 158, 11, 0.35);
+            --primary: #f59e0b;
+            --primary-light: #fbbf24;
+            --secondary: #f43f5e;
+            --accent-glow: rgba(245, 158, 11, 0.35);
+            --bg-radial-1: rgba(245, 158, 11, 0.12);
+            --bg-radial-2: rgba(244, 63, 94, 0.08);
+            --btn-grad-from: #d97706;
+            --btn-grad-to: #e11d48;
+        }
+
+        /* 4. Electric Cyan / Deep Blue Theme */
+        [data-theme="cyan"] {
+            --bg-main: #040914;
+            --card-bg: rgba(8, 20, 40, 0.72);
+            --card-hover: rgba(12, 30, 60, 0.85);
+            --border-subtle: rgba(6, 182, 212, 0.15);
+            --border-glow: rgba(6, 182, 212, 0.35);
+            --primary: #06b6d4;
+            --primary-light: #38bdf8;
+            --secondary: #3b82f6;
+            --accent-glow: rgba(6, 182, 212, 0.35);
+            --bg-radial-1: rgba(6, 182, 212, 0.12);
+            --bg-radial-2: rgba(59, 130, 246, 0.08);
+            --btn-grad-from: #0891b2;
+            --btn-grad-to: #2563eb;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: #f1f5f9;
+            background-image: 
+                radial-gradient(at 0% 0%, var(--bg-radial-1) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, var(--bg-radial-2) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, var(--bg-radial-1) 0px, transparent 50%);
+            background-attachment: fixed;
+            transition: background-color 0.3s ease;
+        }
+
+        .glass-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid var(--border-subtle);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .glass-panel-interactive {
+            background: var(--card-bg);
+            backdrop-filter: blur(18px);
+            border: 1px solid var(--border-subtle);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-panel-interactive:hover {
+            border-color: var(--border-glow);
+            background: var(--card-hover);
+            box-shadow: 0 12px 32px -8px var(--accent-glow);
+        }
+
+        .custom-btn {
+            background: linear-gradient(135deg, var(--btn-grad-from), var(--btn-grad-to));
+            box-shadow: 0 4px 20px -2px var(--accent-glow);
+        }
+        .custom-btn:hover {
+            filter: brightness(1.1);
+        }
+
+        .theme-primary-text { color: var(--primary); }
+        .theme-primary-border { border-color: var(--border-subtle); }
+        .theme-primary-bg { background-color: var(--primary); }
+
+        .glow-recording {
+            box-shadow: 0 0 35px 6px rgba(239, 68, 68, 0.55);
+            animation: pulse-ring 1.6s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 25px 4px rgba(239, 68, 68, 0.45); }
+            50% { transform: scale(1.03); opacity: 0.92; box-shadow: 0 0 45px 10px rgba(239, 68, 68, 0.75); }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-white/[0.08] bg-dark-bg/85 backdrop-blur-xl sticky top-0 z-50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <!-- Left: Logo & System Identifier -->
+            <div class="flex items-center space-x-3.5">
+                <div class="w-10 h-10 rounded-xl p-[1px] shadow-lg" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">
+                    <div class="w-full h-full bg-[#050a0e] rounded-[11px] flex items-center justify-center">
+                        <i data-lucide="audio-waveform" class="w-5 h-5 theme-primary-text"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-bold text-base tracking-tight text-white">Voice RAG</h1>
+                        <span class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full border" style="background: rgba(255,255,255,0.05); border-color: var(--border-subtle); color: var(--primary-light);">
+                            HH Goa 2026
+                        </span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 font-medium">MSMARCO-XI • Hierarchical Indexing • Groq LPU</p>
+                </div>
+            </div>
+
+            <!-- Right: Theme Switcher & Status -->
+            <div class="flex items-center space-x-3">
+                
+                <!-- Live Palette Selector -->
+                <div class="flex items-center gap-1.5 bg-white/[0.04] p-1 rounded-xl border border-white/[0.08]">
+                    <button class="theme-btn w-6 h-6 rounded-lg bg-emerald-500 hover:scale-110 transition-transform active:scale-95 flex items-center justify-center" data-theme="emerald" title="Cyber Emerald"></button>
+                    <button class="theme-btn w-6 h-6 rounded-lg bg-violet-500 hover:scale-110 transition-transform active:scale-95 flex items-center justify-center" data-theme="nebula" title="Royal Nebula"></button>
+                    <button class="theme-btn w-6 h-6 rounded-lg bg-amber-500 hover:scale-110 transition-transform active:scale-95 flex items-center justify-center" data-theme="solar" title="Solar Sunset"></button>
+                    <button class="theme-btn w-6 h-6 rounded-lg bg-cyan-500 hover:scale-110 transition-transform active:scale-95 flex items-center justify-center" data-theme="cyan" title="Electric Cyan"></button>
+                </div>
+
+                <div id="statusBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-mono border" style="background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.25); color: #34d399;">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span id="statusText">System Ready</span>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-7 w-full flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Column: Voice Interaction & Answer Synthesizer (7 cols) -->
+        <div class="lg:col-span-7 space-y-6">
+
+            <!-- Voice Capture & Visualizer Console -->
+            <div class="glass-panel rounded-2xl p-6 relative overflow-hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider font-mono theme-primary-text">
+                        <i data-lucide="mic" class="w-3.5 h-3.5"></i>
+                        <span>Voice Interface</span>
+                    </div>
+                    <span id="recordingTimer" class="text-xs font-mono text-slate-400 bg-white/[0.03] px-2.5 py-1 rounded-lg border border-white/[0.06]">
+                        Ready to listen
+                    </span>
+                </div>
+
+                <!-- Animated Waveform Canvas Container -->
+                <div class="w-full h-28 bg-[#020508]/80 border border-white/[0.08] rounded-xl mb-5 flex items-center justify-center relative overflow-hidden group">
+                    <canvas id="visualizerCanvas" class="w-full h-full"></canvas>
+                    <div id="visualizerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-xs text-slate-500 font-mono pointer-events-none space-y-1">
+                        <i data-lucide="sparkle" class="w-4 h-4 theme-primary-text animate-bounce"></i>
+                        <span>Click Record Voice to speak (16kHz PCM Stream)</span>
+                    </div>
+                </div>
+
+                <!-- Controls: Mic Button & Instant Input Field -->
+                <div class="flex flex-col sm:flex-row items-center gap-3.5">
+                    <button id="micBtn" class="w-full sm:w-auto px-6 py-3.5 rounded-xl custom-btn active:scale-[0.98] text-white font-semibold text-sm flex items-center justify-center gap-2.5 transition-all cursor-pointer">
+                        <i data-lucide="mic" class="w-4 h-4"></i>
+                        <span id="micBtnText">Record Voice</span>
+                    </button>
+                    
+                    <div class="w-full relative flex-grow">
+                        <input type="text" id="textQueryInput" placeholder="Ask anything in voice or type here..." class="w-full bg-[#020508]/70 border border-white/[0.08] focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 outline-none pr-10 transition-all font-sans">
+                        <button id="sendTextBtn" class="absolute right-2.5 top-2.5 p-1.5 text-slate-400 hover:text-emerald-400 hover:bg-white/[0.05] rounded-lg transition-all cursor-pointer">
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Suggested Query Tags -->
+                <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center flex-wrap gap-2 text-xs">
+                    <span class="text-slate-500 text-[11px] font-mono">Suggestions:</span>
+                    <button class="sample-pill bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 px-2.5 py-1 rounded-lg border border-white/[0.06] transition text-[11px]" data-query="Who is the Prime Minister of India?">
+                        🇮🇳 Prime Minister of India?
+                    </button>
+                    <button class="sample-pill bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 px-2.5 py-1 rounded-lg border border-white/[0.06] transition text-[11px]" data-query="When did Chandrayaan-3 land on the moon?">
+                        🚀 Chandrayaan-3 Landing?
+                    </button>
+                    <button class="sample-pill bg-white/[0.03] hover:bg-white/[0.08] text-slate-300 px-2.5 py-1 rounded-lg border border-white/[0.06] transition text-[11px]" data-query="What are the best places to visit in Goa?">
+                        🌴 Best Places in Goa?
+                    </button>
+                </div>
+            </div>
+
+            <!-- Synthesis & Answer Card -->
+            <div class="glass-panel rounded-2xl p-6 relative overflow-hidden space-y-4">
+                <div class="flex items-center justify-between border-b border-white/[0.08] pb-3.5">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center theme-primary-text border" style="background: rgba(255,255,255,0.04); border-color: var(--border-subtle);">
+                            <i data-lucide="bot" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-semibold text-slate-100 text-sm">Grounded Synthesis</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <!-- Text-to-Speech Play Button -->
+                        <button id="ttsPlayBtn" class="hidden items-center gap-1.5 text-xs font-mono bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 border border-white/[0.08] px-2.5 py-1 rounded-lg transition cursor-pointer" title="Listen to answer">
+                            <i data-lucide="volume-2" class="w-3.5 h-3.5 theme-primary-text"></i>
+                            <span>Speak</span>
+                        </button>
+                        <!-- Copy Button -->
+                        <button id="copyBtn" class="hidden items-center gap-1.5 text-xs font-mono bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 border border-white/[0.08] px-2.5 py-1 rounded-lg transition cursor-pointer" title="Copy answer">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span id="copyBtnText">Copy</span>
+                        </button>
+                        <!-- Grounding Badge -->
+                        <div id="groundingBadge" class="hidden text-xs font-mono px-2.5 py-1 rounded-lg border font-medium">
+                            <!-- Dynamic Badge -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-Time Voice Transcript Box -->
+                <div id="transcriptBox" class="hidden bg-[#020508]/60 border rounded-xl p-3 text-xs text-slate-400 flex items-start gap-2" style="border-color: var(--border-subtle);">
+                    <i data-lucide="quote" class="w-3.5 h-3.5 theme-primary-text shrink-0 mt-0.5"></i>
+                    <div>
+                        <span class="theme-primary-text font-semibold font-mono">Recognized Speech: </span>
+                        <span id="transcriptText" class="text-slate-100 font-medium"></span>
+                    </div>
+                </div>
+
+                <!-- Answer Content Display -->
+                <div id="answerContent" class="text-slate-200 leading-relaxed text-sm min-h-[90px] flex items-center justify-center text-slate-500 italic">
+                    Click "Record Voice" or select a suggested topic above to run the RAG pipeline.
+                </div>
+
+                <!-- Response Telemetry Strip -->
+                <div id="responseFooter" class="hidden pt-3 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-slate-400">
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-slate-500">Confidence:</span>
+                            <span id="confidenceVal" class="theme-primary-text font-semibold font-mono">-</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-slate-500">Grounding:</span>
+                            <span id="groundingVal" class="text-emerald-400 font-semibold font-mono">-</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 bg-white/[0.04] px-2.5 py-1 rounded-md border border-white/[0.06]">
+                        <i data-lucide="timer" class="w-3.5 h-3.5 text-slate-400"></i>
+                        <span>Latency: <strong id="totalLatencyVal" class="text-white font-semibold">-</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Sub-ms Latency Waterfall & Hierarchical Inspector (5 cols) -->
+        <div class="lg:col-span-5 space-y-6">
+
+            <!-- Real-Time Latency Telemetry Waterfall -->
+            <div class="glass-panel rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-white/[0.08] pb-3.5">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                            <i data-lucide="gauge" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-semibold text-slate-100 text-sm">Latency Telemetry</h2>
+                        </div>
+                    </div>
+                    <span class="text-[11px] font-mono text-slate-400 bg-white/[0.03] px-2 py-0.5 rounded border border-white/[0.06]">
+                        P50/P70/P100
+                    </span>
+                </div>
+
+                <!-- Waterfall Progress Rows -->
+                <div id="latencyWaterfall" class="space-y-3 text-xs font-mono">
+                    
+                    <div>
+                        <div class="flex justify-between text-slate-400 mb-1">
+                            <span class="flex items-center gap-1.5"><i data-lucide="mic" class="w-3 h-3 text-emerald-400"></i> STT Transcription</span>
+                            <span id="time_stt" class="text-slate-300 font-semibold">0.0 ms</span>
+                        </div>
+                        <div class="w-full bg-[#020508] rounded-full h-1.5 overflow-hidden">
+                            <div id="bar_stt" class="h-1.5 rounded-full transition-all duration-500" style="background: linear-gradient(90deg, var(--primary), var(--secondary)); width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-slate-400 mb-1">
+                            <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-3 h-3 text-cyan-400"></i> Pre-Retrieval Guard</span>
+                            <span id="time_guard" class="text-slate-300 font-semibold">0.0 ms</span>
+                        </div>
+                        <div class="w-full bg-[#020508] rounded-full h-1.5 overflow-hidden">
+                            <div id="bar_guard" class="bg-gradient-to-r from-cyan-500 to-teal-400 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-slate-400 mb-1">
+                            <span class="flex items-center gap-1.5"><i data-lucide="cpu" class="w-3 h-3 text-teal-400"></i> FastEmbed ONNX (bge-small)</span>
+                            <span id="time_embed" class="text-slate-300 font-semibold">0.0 ms</span>
+                        </div>
+                        <div class="w-full bg-[#020508] rounded-full h-1.5 overflow-hidden">
+                            <div id="bar_embed" class="bg-gradient-to-r from-teal-500 to-emerald-400 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-slate-400 mb-1">
+                            <span class="flex items-center gap-1.5"><i data-lucide="database" class="w-3 h-3 text-emerald-400"></i> Qdrant HNSW Search</span>
+                            <span id="time_vector" class="text-slate-300 font-semibold">0.0 ms</span>
+                        </div>
+                        <div class="w-full bg-[#020508] rounded-full h-1.5 overflow-hidden">
+                            <div id="bar_vector" class="bg-gradient-to-r from-emerald-500 to-cyan-400 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-slate-400 mb-1">
+                            <span class="flex items-center gap-1.5"><i data-lucide="layers" class="w-3 h-3 text-purple-400"></i> Parent Resolution & Rerank</span>
+                            <span id="time_rerank" class="text-slate-300 font-semibold">0.0 ms</span>
+                        </div>
+                        <div class="w-full bg-[#020508] rounded-full h-1.5 overflow-hidden">
+                            <div id="bar_rerank" class="bg-gradient-to-r from-purple-500 to-pink-400 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-slate-400 mb-1">
+                            <span class="flex items-center gap-1.5"><i data-lucide="zap" class="w-3 h-3 text-amber-400"></i> LLM Synthesis (Groq LPU)</span>
+                            <span id="time_llm" class="text-slate-300 font-semibold">0.0 ms</span>
+                        </div>
+                        <div class="w-full bg-[#020508] rounded-full h-1.5 overflow-hidden">
+                            <div id="bar_llm" class="bg-gradient-to-r from-amber-500 to-orange-400 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-slate-400 mb-1">
+                            <span class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3 h-3 text-emerald-400"></i> Post-Grounding Guard</span>
+                            <span id="time_grounding" class="text-slate-300 font-semibold">0.0 ms</span>
+                        </div>
+                        <div class="w-full bg-[#020508] rounded-full h-1.5 overflow-hidden">
+                            <div id="bar_grounding" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- KPI Metric Cards -->
+                <div class="grid grid-cols-2 gap-3 pt-3 border-t border-white/[0.06]">
+                    <div class="bg-[#020508]/80 p-3.5 rounded-xl border border-white/[0.06] text-center">
+                        <span class="text-[10px] uppercase tracking-wider text-slate-500 font-mono font-semibold">Core Retrieval</span>
+                        <div id="coreRetrievalMetric" class="text-xl font-bold font-mono theme-primary-text mt-1">-- ms</div>
+                        <span class="text-[10px] text-slate-500 font-mono">Embed + HNSW Search</span>
+                    </div>
+                    <div class="bg-[#020508]/80 p-3.5 rounded-xl border border-white/[0.06] text-center">
+                        <span class="text-[10px] uppercase tracking-wider text-slate-500 font-mono font-semibold">Total Pipeline</span>
+                        <div id="totalPipelineMetric" class="text-xl font-bold font-mono text-emerald-400 mt-1">-- ms</div>
+                        <span class="text-[10px] text-slate-500 font-mono">End-to-End Execution</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hierarchical Context & Source Passages Inspector -->
+            <div class="glass-panel rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-white/[0.08] pb-3.5">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                            <i data-lucide="book-open" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-semibold text-slate-100 text-sm">MSMARCO-XI Context Inspector</h2>
+                        </div>
+                    </div>
+                    <span id="contextCount" class="text-xs font-mono bg-white/[0.04] text-slate-300 px-2.5 py-0.5 rounded-lg border border-white/[0.06]">
+                        0 Sources
+                    </span>
+                </div>
+
+                <div id="contextList" class="space-y-3 max-h-[290px] overflow-y-auto pr-1 text-xs">
+                    <div class="text-slate-500 text-center py-8 italic font-mono">
+                        No MSMARCO-XI passages matched (General AI mode).
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Professional Footer -->
+    <footer class="border-t border-white/[0.08] bg-dark-bg/60 py-4 text-center text-xs text-slate-500 font-mono transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <span>Hacker House Goa 2026 • Task 2 Submission</span>
+            <span>AI4Bharat MSMARCO-XI • FastEmbed ONNX • Qdrant • Groq LPU</span>
+        </div>
+    </footer>
+
+    <!-- Frontend Script -->
+    <script src="app.js"></script>
+</body>
+</html>

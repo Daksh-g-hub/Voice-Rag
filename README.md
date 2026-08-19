@@ -1,5 +1,4 @@
 # Voice-Enabled RAG System (AI4Bharat MSMARCO-XI)
-### Hacker House Goa 2026 — Shortlisting Task 2 Submission
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688.svg)](https://fastapi.tiangolo.com)

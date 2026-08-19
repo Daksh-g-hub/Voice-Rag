@@ -175,8 +175,3 @@ voice-rag/
 
 ---
 
-## 📽️ Demo Video Guide (For Submission)
-1. **0:00 - 0:30 (Architecture & Dataset):** Show the MSMARCO-XI dataset integration, Parent-Child chunking rationale, and sub-millisecond telemetry setup.
-2. **0:30 - 1:15 (Live Voice Query Demonstration):** Click the mic, ask a question from the Indian constitution/civics domain, show live waveform $\to$ transcript $\to$ grounded answer with `[Source 1]` citation.
-3. **1:15 - 1:45 (Guardrail Refusal Demo):** Ask an out-of-domain question (e.g. pizza recipe) and show the instant refusal message without hallucination. Show prompt injection block.
-4. **1:45 - 2:30 (Latency Breakdown & Benchmark Dashboard):** Walk through the real-time waterfall telemetry and present the P50/P70/P100 benchmark table.

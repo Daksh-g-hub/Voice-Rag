@@ -38,8 +38,12 @@ class TextQueryRequest(BaseModel):
     language_code: Optional[str] = "en-IN"
     use_cache: bool = True
 
-@app.get("/")
+from fastapi.responses import RedirectResponse
+
+@app.get("/", include_in_schema=False)
 async def root():
+    if os.path.exists(frontend_dir):
+        return RedirectResponse(url="/app/")
     return {
         "status": "healthy",
         "app": settings.APP_NAME,
